@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych.js"></script>
+    <script src="consent.js"></script>
+    <script src="http://requirejs.org/docs/release/2.1.5/comments/require.js"></script>
+    <script type="text/javascript" src="seq_003.json"></script>
+    <script src="./sequences2/seq_0.js"></script>
+    <script src="plugins/jspsych-image-button-response.js"></script>
+    <script src="plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="plugins/jspsych-html-button-response.js"></script>
+    <script src="plugins/jspsych-instructions.js"></script>
+    <script src="plugins/jspsych-survey-html-form.js"></script>
+    <script src="plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="plugins/jspsych-fullscreen.js"></script>
+    <script src="plugins/jspsych-image-slider-response.js"></script>
+    <script src="plugins/jspsych-preload.js"></script>
+    <script src="plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="plugins/jspsych-iat-image.js"></script>
+    <script src="plugins/jspsych-preload.js"></script>
+    <script src="test.js"></script>
+    <script src="/sequences2/seq_0.js"></script>
+    <script src="consent.js"></script>
+    <link href="css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body bgcolor="grey" ></body>
+  <script>
+    var timeline = [];
+    var correct = 0;
+  
+    var trial = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>How are you feeling <b>right now?</b></p>',
+  html: '<p> I am feeling <input name="first" type="text" />, <input name="second" type="text" />, and <input name="third" type="text" />.</p>'
+};
+    //timeline.push(trial);
+
+    jsPsych.init({
+      timeline: trial,
+      default_iti: 1000,
+      on_finish: function () {
+        var csv = jsPsych.data.get().csv();
+        var filename = "task.csv";
+        console.log("this is csv: " + csv);
+        jsPsych.data.displayData();
+      },
+    });
+
+
+    
+  </script>
+</html>

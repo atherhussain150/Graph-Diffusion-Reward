@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych.js"></script>
+    <script src="saveData.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- <script src="http://requirejs.org/docs/release/2.1.5/comments/require.js"></script> -->
+    <script type="text/javascript" src="seq_003.json"></script>
+    <!-- <script src="./RandomSeq/seq_000.js"></script> -->
+    <script src="plugins/jspsych-image-button-response.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'></script>
+    <script src="Graph.js"></script>
+    <script src="consent.js"></script>
+    <script src="./demo_trial.js"></script>
+    
+    <script src="plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="plugins/jspsych-external-html.js"></script>
+    <script src="plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="plugins/jspsych-html-button-response.js"></script>
+    <script src="plugins/jspsych-instructions.js"></script>
+    <script src="plugins/jspsych-survey-html-form.js"></script>
+    <script src="plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="plugins/jspsych-fullscreen.js"></script>
+    <script src="plugins/jspsych-image-slider-response.js"></script>
+    <script src="plugins/jspsych-preload.js"></script>
+    <script src="plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="plugins/jspsych-iat-image.js"></script>
+    <script src="trial.js"></script>
+    <script src="tutorial1.js"></script>
+    <script src="./demo.js"></script>
+    <script src="./seq_000.js"></script>
+    <script src="./myconsentform.js"></script>
+    <!-- <script src="/RandomSeq1/seq_000.js"></script> -->
+    <!-- <script src="consent.js"></script> -->
+    <link href="css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body bgcolor="grey">
+    
+  </body>
+  <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    // experimental session-defining variables
+var task_name = "data_files";
+var sbj_id = "test";
+
+// // you must put your save_data php url here.
+var save_url = "http://131.246.224.38:5500/exp_data/save_data.php";
+var data_dir = task_name;
+
+// // my preference is to include the task and sbj_id in the file name
+var file_name = task_name + '_' + sbj_id;
+
+
+// function save_data_csv() {
+//         jQuery.ajax({
+//             type: 'post',
+//             cache: false,
+//             url: save_url,
+//             data: {
+//                 data_dir: data_dir,
+//                 file_name: file_name + '.csv', // the file type should be added
+//                 exp_data: jsPsych.data.get().csv()
+//             }
+//         });
+//     }
+
+// function saveData(name, data){
+//   var xhr = new XMLHttpRequest();
+//   xhr.open("POST", "http://localhost/juli_conn5.php", true); // 'write_data.php' is the path to the php file described above.
+//   xhr.setRequestHeader('Content-Type', 'application/json');
+//   xhr.send(JSON.stringify({filedata: data}));
+//   // xhr.send(JSON.stringify(data));
+// }
+
+var serverComm = {};
+
+// Save on update
+serverComm.save_data = function(data, script){
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', script);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify(data));
+}
+
+// var url = "php/test.php"; 
+// var http = new XMLHttpRequest(); 
+// http.open("GET", url, true); 
+// http.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+// http.onreadystatechange = function() 
+// { if(http.readyState == 4 && http.status == 200) 
+//   { 
+//     var container = document.getElementById("test"); container.innerHTML = http.responseText; 
+//   } } 
+//   http.send();
+var calc = 0;
+    var preload = {
+      type: "preload.js",
+      auto_preload: true }
+    var timeline = [];
+    var correct = 0;
+    var welcome_trial = {
+      type: "html-button-response",
+      timeline: [
+        { stimulus: "", trial_duration: 10 },
+        {
+          stimulus:
+          "<p>Welcome to our experiment.</p><p> " +
+            "</p><p><b>This is an online experiment. It will take up to 20-25 minutes</b></p></p><p><b>Whilst completing the experiment, please do focus on following: </b></p><p> <b>Do not</b> refresh the page while experiment is going on" +
+            " </p><p>- Make sure you have a stable internet connection</p></p><p>- You should be sitting in a comfortable environment to concentrate properly.</p><p>- Thank you for your interest in taking part.</p>" +
+            "<p>To continue with the instructions of the experiment, press the button below </p>",
+        },
+      ],
+      //stimulus: "Welcome to the experiment",
+      choices: ["Click to continue"],
+      //   trial_duration: null,
+      //   stimulus_duration: null
+    };
+
+    // var consent_block = {
+    //       type:'consent',
+    //       consent_text:'<div class = centerbox><p class = block-text>Welcome to the experiment. Please sign away your brain.</p><p>gggg</p><br></br>',
+    //       checkbox_text: 'I agree to participate in this study.',
+    //       button_text: "Next!",
+    //       timing_post_trial: 0
+    //     };
+
+    // var Demographics = {
+    //     type: "survey-html-form",
+    //     preamble: '<p>Please Indicate your Age, Gender and Handedness </p>',
+    //     html: '<p> Age <input name="first" type="text" />, Gender <input name="second" type="text" />, Handedness (Right/Left) <input name="third" type="text" />.</p>'
+    //   };
+
+    var pret= {
+      type: "instructions",
+      pages: [
+      "<p><b> Note: Please read the instructions carefully.</b></p>",
+          "<p><b>Gold Mine Puzzle</b></p><p> You are an archaeologist that has found an ancient Inka gold mine. However, the mine's shafts are like a maze, and the only orientation are signs on the mines walls. There is GOLD scattered around the place, and you are sure, there will be a larger <b>PILE OF GOLD </b>somewhere in the mine. In order to find it, you need to map out the mine with the help of the symbols that you found inside. You figured there must be some pattern in the symbols and you need to find out, which symbol was found close to which other symbol</p><p> In total, there are 15 different signs that you found in the mine.</p><p> Each of these is connected to 4 other signs.</p><p> You will see the signs on next page: </p>",
+          '<img src="examples/img/p1.png"></img><br> These are the signs you will encounter in the mine. You do not need to remember them right now.',
+          "<p>For mapping out the mine, you will always see a random sign, and will need to chose from three other random signs, out of which, only one is correct. You found out that there is no logical order in the sign connections, that means you will nead to learn the signs by trial-and-error.</p> <br> (On next page, You will see the sample screen)",
+          '<img src="examples/img/p3.png"></img><br> This is how you will later need to chose which connection is correct. Only one of the three upper signs is connected to the sign shown at the bottom.',
+          "<p>If you select the correct one you will get 1 gold coin.</p><p>You Have to learn and remember which one was correct.</p><p><b>Remember! You have to collect as many gold coins as you can.</b> </p> According to the ancient scriptures, there is one special connection, that will contain far more cold coins than the regular connections.</b></p>",
+          "<p>Initially you don't know which one is correct and which one is incorrect</p><p>So, try to remember the correct connections<br><br>In the end of the experiment you have to answer which two signs pointed to the secret stash of coins mentioned in the anciet scriptures.</p>",
+          "<p>You have 15 seconds to make a decision for each trial (Sign selection).</p><p>If you didn't select any option</p><p>it will be considered as an incorrect, and you will see the next sign</p>",
+          "<p><b>Now you will see a clickable example of how the mine connections are presented to you later</b></p><p>You do not need to remember this yet, it is just a trial.</p>",
+          
+      ],
+      show_clickable_nav: true,
+    };
+    var TrialNo1 = {
+    type: "html-button-response",
+    stimulus: function () {
+      var html = `<table style="margin: 0px auto;"><tr>
+                        <p style="font-size:30px; font-family:fantasy;" id="p1">Coins: ${correct}</p>
+                        <td> <img src="${
+                          trialGraph[demo[0][0]]
+                        }" style="text-align: center;  border: 0.5px solid #D3D3D3; border-radius: 5px; height:140px;width:140px"></td>
+                        </tr>`;
+              return html;
+    },
+
+    choices: [
+      `<img name ="a" src="${
+        trialGraph[demo[0][1]]
+      }" style="height:100px;width:100px">`,
+      `<img  name="b" src="${
+        trialGraph[demo[0][2]]
+      }" style="height:100px;width:100px">`,
+      `<img name ="c" src="${
+        trialGraph[demo[0][3]]
+      }" style="height:100px;width:100px">`,
+      // a,
+      // b,
+      // c,
+    ],
+    data: {
+      
+      start_demo: demo[0],
+      correct_resp: [`<img src="${trialGraph[demo[demo[1]]]}">`, `<img src="${trialGraph[demo[demo[2]]]}">`, `<img src="${trialGraph[demo[demo[3]]]}">`],
+      corr_r: demo[demo[4]],
+      RewardSelected: 0,
+      
+      choices: [
+        `<img src="${trialGraph[demo[0][1]]}">`,
+        `<img src="${trialGraph[demo[0][2]]}">`,
+        `<img src="${trialGraph[demo[0][3]]}">`,
+      ],
+      render_on_canvas: true,
+    },
+
+    prompt: `<p>Choose the correct Connecting Sign for the Sign (below), from 3 signs above</p>`,
+    trial_duration: 5000,
+   
+    on_finish:function (data)
+    {
+        function tempAlert(msg, duration) {
+            var el = document.createElement("a");
+            el.setAttribute(
+              "style",
+              "position:absolute;top:45%;left:46%;background-color:grey; color: #34FF47; font-size:40px"
+            );
+            el.innerHTML = msg;
+            setTimeout(function () {
+              el.parentNode.removeChild(el);
+            }, duration);
+            document.body.appendChild(el);
+          }
+
+          //var msg = "Incorrect, Correct Image was "  + "\n" + `<img src="${Graph[demo[5]]}" style="position:absolute;bottom:-270%;left:110%;text-align: right;  border: 2px solid #D3D3D3; border-radius: 5px; border-color:red; height:200;width:200px">`;
+          var msg = `<img style="margin: -150px 150px 175px -168px" src="examples/img/x.png" />` ;
+          tempAlert(msg, 500);
+    }
+    
+  };
+  var endingPge = {
+    type: "html-button-response",
+    stimulus: function () {
+      var html = `<table style="margin: 0px auto;"><tr>
+                        <p style="font-size:30px; font-family:fantasy;" id="p1">Coins: ${correct}</p>
+                        <td> <img src="${
+                          trialGraph[demo[0][0]]
+                        }" style="text-align: center;  border: 0.5px solid #D3D3D3; border-radius: 5px; height:140px;width:140px"></td>
+                        </tr>`;
+              return html;
+    },
+
+    choices: [
+      `<img name ="a" src="${
+        trialGraph[demo[0][1]]
+      }" style="height:100px;width:100px">`,
+      `<img  name="b" src="${
+        trialGraph[demo[0][2]]
+      }" style="height:100px;width:100px">`,
+      `<img name ="c" src="${
+        trialGraph[demo[0][3]]
+      }" style="height:100px;width:100px">`,
+      // a,
+      // b,
+      // c,
+    ],
+    data: {
+      
+      start_demo: demo[0],
+      correct_resp: [`<img src="${trialGraph[demo[demo[1]]]}">`, `<img src="${trialGraph[demo[demo[2]]]}">`, `<img src="${trialGraph[demo[demo[3]]]}">`],
+      corr_r: demo[demo[4]],
+      RewardSelected: 0,
+      
+      choices: [
+        `<img src="${trialGraph[demo[0][1]]}">`,
+        `<img src="${trialGraph[demo[0][2]]}">`,
+        `<img src="${trialGraph[demo[0][3]]}">`,
+      ],
+      render_on_canvas: true,
+    },
+
+    prompt: `<p>Choose the correct Connecting Sign for the Sign (below), from 3 signs above</p>`,
+    trial_duration: 5000,
+   
+    on_finish:function (data)
+    {
+        function tempAlert(msg, duration) {
+            var el = document.createElement("a");
+            el.setAttribute(
+              "style",
+              "position:absolute;top:45%;left:46%;background-color:grey; color: #34FF47; font-size:40px"
+            );
+            el.innerHTML = msg;
+            setTimeout(function () {
+              el.parentNode.removeChild(el);
+            }, duration);
+            document.body.appendChild(el);
+          }
+
+          //var msg = "Incorrect, Correct Image was "  + "\n" + `<img src="${Graph[demo[5]]}" style="position:absolute;bottom:-270%;left:110%;text-align: right;  border: 2px solid #D3D3D3; border-radius: 5px; border-color:red; height:200;width:200px">`;
+          var msg = `<img style="margin: -150px 150px 175px -168px" src="examples/img/x.png" />` ;
+          tempAlert(msg, 500);
+    }
+    
+  };
+
+  var TrialNo2 = {
+    type: "html-button-response",
+    stimulus: function () {
+      var html = `<table style="margin: 0px auto;"><tr>
+                        <p style="font-size:30px; font-family:fantasy;" id="p1">Coins: ${correct}</p>
+                        <td> <img src="${
+                          trialGraph[demo[1][0]]
+                        }" style="text-align: center;  border: 0.5px solid #D3D3D3; border-radius: 5px; height:140px;width:140px"></td>
+                        </tr>`;
+              return html;
+    },
+
+    choices: [
+      `<img name ="a" src="${
+        trialGraph[demo[1][1]]
+      }" style="height:100px;width:100px">`,
+      `<img  name="b" src="${
+        trialGraph[demo[1][2]]
+      }" style="height:100px;width:100px">`,
+      `<img name ="c" src="${
+        trialGraph[demo[1][3]]
+      }" style="height:100px;width:100px">`,
+     
+    ],
+    data: {
+      
+      start_demo: demo[0],
+      correct_resp: [`<img src="${trialGraph[demo[demo[1]]]}">`, `<img src="${trialGraph[demo[demo[2]]]}">`, `<img src="${trialGraph[demo[demo[3]]]}">`],
+      corr_r: demo[demo[4]],
+      RewardSelected: 0,
+      edge: demo[0] + demo[demo[4]],
+      choicesA: [demo[1], demo[2], demo[3]],
+      choices: [
+        `<img src="${trialGraph[demo[1][1]]}">`,
+        `<img src="${trialGraph[demo[1][2]]}">`,
+        `<img src="${trialGraph[demo[1][3]]}">`,
+      ],
+      render_on_canvas: true,
+    },
+
+    prompt: `<p>Choose the correct Connecting Sign for the Sign (below), from 3 signs above</p>`,
+    trial_duration: 10000,
+   
+    on_finish: function (data)
+    {
+        function tempAlert(msg, duration) {
+            var el = document.createElement("b");
+            el.setAttribute(
+              "style",
+              "position:absolute;top:45%;left:46%;background-color:grey; color: red; font-size:40px"
+            );
+            el.innerHTML = msg;
+            setTimeout(function () {
+              el.parentNode.removeChild(el);
+            }, duration);
+            document.body.appendChild(el);
+          }
+
+          //var msg = "Incorrect, Correct Image was "  + "\n" + `<img src="${Graph[demo[5]]}" style="position:absolute;bottom:-270%;left:110%;text-align: right;  border: 2px solid #D3D3D3; border-radius: 5px; border-color:red; height:200;width:200px">`;
+          var msg =`<img style="margin: -150px 150px 175px -168px" src="examples/img/y.png" />` ;
+          tempAlert(msg, 2000);
+    }
+  };
+
+  var TrialNo3 = {
+    type: "html-button-response",
+    stimulus: function () {
+      var html = `<table style="margin: 0px auto;"><tr>
+                        <p style="font-size:30px; font-family:fantasy;" id="p1">Coins: ${correct}</p>
+                        <td> <img src="${
+                          trialGraph[demo[2][0]]
+                        }" style="text-align: center;  border: 0.5px solid #D3D3D3; border-radius: 5px; height:140px;width:140px"></td>
+                        </tr>`;
+              return html;
+    },
+
+    choices: [
+      `<img name ="a" src="${
+        trialGraph[demo[2][1]]
+      }" style="height:100px;width:100px">`,
+      `<img  name="b" src="${
+        trialGraph[demo[2][2]]
+      }" style="height:100px;width:100px">`,
+      `<img name ="c" src="${
+        trialGraph[demo[2][3]]
+      }" style="height:100px;width:100px">`,
+      // a,
+      // b,
+      // c,
+    ],
+    data: {
+      
+      start_demo: demo[0],
+      correct_resp: [`<img src="${trialGraph[demo[demo[1]]]}">`, `<img src="${trialGraph[demo[demo[2]]]}">`, `<img src="${trialGraph[demo[demo[3]]]}">`],
+      corr_r: demo[demo[4]],
+      RewardSelected: 0,
+      edge: demo[0] + "-" + demo[demo[4]],
+      choicesA: [demo[1], demo[2], demo[3]],
+      choices: [
+        `<img src="${trialGraph[demo[2][1]]}">`,
+        `<img src="${trialGraph[demo[2][2]]}">`,
+        `<img src="${trialGraph[demo[2][3]]}">`,
+      ],
+      render_on_canvas: true,
+    },
+
+    prompt: `<p>Choose the correct Connecting Sign for the Sign (below), from 3 signs above</p>`,
+    trial_duration: 10000,
+   
+    on_finish: function (data)
+    {
+        function tempAlert(msg, duration) {
+            var el = document.createElement("c");
+            el.setAttribute(
+              "style",
+              "position:absolute;top:30%;left:45%;background-color:grey; color: #34FF47; font-size:40px"
+            );
+            el.innerHTML = msg;
+            setTimeout(function () {
+              //el.parentdemo.removeChild(el);
+              el.parentNode.removeChild(el);
+            }, duration);
+            document.body.appendChild(el);
+          }
+
+          var msg = `<img style="margin: -150px 150px 175px -168px" src="examples/img/z.png" />` ;
+            
+          tempAlert(msg, 2000);
+    }
+  };
+
+  var ending2 = {
+  type: "survey-html-form",
+  preamble: '<p> <b>Which connection was containing the secret stash of coins?</b></p><img src="examples/img/p99.png"></img>',
+  html: '<p>Write the number of two connections here <input name="first" type="text" />, and <input name="second" type="text" />.</p>'
+};
+var ending1= {
+      type: "instructions",
+      pages: [
+      "<p><b> You have done a very good job</b></p>",
+          "<p><b>Now you will see the all signs in a single picture with numbers</b></p><p> You have to write the number of the two signs that pointed towards the secret stash of cold coins </p><p> You will see the signs on next page: </p>",
+      ],
+      show_clickable_nav: true,
+    };
+
+ 
+
+    var Break = {
+      type: "html-button-response",
+      timeline: [
+        // { stimulus: "", trial_duration: 10 },
+        {
+          stimulus:
+          "<p><b>Good job, take a short break of (maximum) 30 seconds.</b></p><p>You can collect more gold coins now hope you learned some hidden GOLD MINE signs</p>",
+        },
+      ],
+      //stimulus: "Welcome to the experiment",
+      choices: ["Let's go inside the mine again"],
+      //   trial_duration: null,
+      //   stimulus_duration: null
+    };
+    var start = {
+      type: "html-button-response",
+      timeline: [
+        // { stimulus: "", trial_duration: 10 },
+        {
+          stimulus:
+          "<p><b>Good job!</b></p><p>We hope you got a good impression of what the experiment will look like. Let's start and go into the gold mine!</p>",
+        },
+      ],
+      //stimulus: "Welcome to the experiment",
+      choices: ["Let's go inside the mine again"],
+      //   trial_duration: null,
+      //   stimulus_duration: null
+    };
+
+   timeline.push(consent);
+    // timeline.push(welcome_trial);
+    // // timeline.push(preload);
+    // // timeline.push(Demographics);
+    // timeline.push(pret);
+    // timeline.push(TrialNo1);
+    // timeline.push(TrialNo2);
+    // timeline.push(TrialNo3);
+    // timeline.push(start);
+
+
+
+    for (let block = 0; block < trials_1.length; block++) {
+      for (let trials = 0; trials < trials_1[block].length; trials++) {
+        // trials_1[block].length-1
+
+        let node = trials_1[block][trials];
+        //console.log(trials_1[block][trials]);
+        var image_button_trial = {
+          type: "html-button-response",
+          stimulus: function () {
+            if (node[5]) {
+              var html = `<table style="margin: 0px auto;">
+                <tr>
+                  
+                    <p style="font-size:30px; font-family:fantasy; color:#39ff14" id="p1">Check out! .. Hidden bonus!</p>
+                  
+                </tr>
+                <p style="font-size:30px; font-family:fantasy; color:gold" id="p1">Focus!</p><p style="font-size:30px; font-family:fantasy; " id="p1">Coins: ${correct}</p>
+
+                <tr style="margin: 10px 10px 10px 10px;"> 
+                 
+                 
+                        
+                  <td> <img src="${
+                    Graph[node[0]]
+                  }" style="text-align: center;  border: 0.5px solid #D3D3D3; border-radius: 5px; height:140px;width:140px"></td>
+                </tr>`;
+
+              return html;
+            } else {
+              var html = `<table style="margin: 0px auto;"><tr>
+                        <p style="font-size:30px; font-family:fantasy;" id="p1">Coins: ${correct}</p>
+                        <td> <img src="${
+                          Graph[node[0]]
+                        }" style="text-align: center;  border: 0.5px solid #D3D3D3; border-radius: 5px; height:140px;width:140px"></td>
+                        </tr>`;
+              return html;
+            }
+            // <p id="p1">Block: ${block} - trial: ${trials} - array: [${node}] - Correct: ${correct}</p>
+          },
+
+          choices: [
+            `<img name ="a" src="${
+              Graph[node[1]]
+            }" style="height:100px;width:100px">`,
+            `<img  name="b" src="${
+              Graph[node[2]]
+            }" style="height:100px;width:100px">`,
+            `<img name ="c" src="${
+              Graph[node[3]]
+            }" style="height:100px;width:100px">`,
+            // a,
+            // b,
+            // c,
+          ],
+          data: {
+            Block_Number: block + 1,
+            Trial_Number: trials + 1,
+            start_node: node[0],
+            correct_resp: `<img src="${Graph[node[node[4]]]}">`,
+            corr_r: node[node[4]],
+            RewardSelected: 0,
+            edge: node[0] + node[node[4]],
+            choicesA: [node[1], node[2], node[3]],
+            choices: [
+              `<img src="${Graph[node[1]]}">`,
+              `<img src="${Graph[node[2]]}">`,
+              `<img src="${Graph[node[3]]}">`,
+            ],
+            
+            render_on_canvas: true,
+          },
+
+          prompt: `<p>Choose the correct Connecting Sign for the Sign (below), from 3 signs above</p>`,
+          trial_duration:  3000,
+
+on_data_update: function(data) {
+          var trial_json_result = {0:data};
+          serverComm.save_data(trial_json_result, "http://localhost/save_data_cont.php");
+        },
+
+          on_finish: function (data) {
+            //document.body.style.backgroundColor = "grey";
+            if (data.choices[data.response] == data.correct_resp) {
+              if (node[5] == "rewarded") {
+                correct += 5;
+                data.RewardSelected += 1;
+                function tempAlert(msg, msg2, duration) {
+                  var el = document.createElement("A");
+                  el.setAttribute(
+                    "style",
+                    "position: absolute;display: flex; justify-content: center;align-items: center; background-color:grey; color: #39FF14;font-size:40px"
+                  );
+                  var el2 = document.createElement("B");
+                  el2.setAttribute(
+                    "style",
+                    "position:absolute;bottom:84%;left:46%;background-color:grey; color: #39FF14; width: 75px; height: 75px;font-size:40px"
+                  );
+                  el.innerHTML = msg;
+                  el2.innerHTML = msg2;
+                  setTimeout(function () {
+                    el.parentNode.removeChild(el);
+                    el2.parentNode.removeChild(el2);
+                  }, duration);
+                  document.body.appendChild(el);
+                  document.body.appendChild(el2);
+                }
+
+                var msg ;
+                var msg2 = `<img src="https://i.gifer.com/origin/ce/cef2ce655eb9740cb8d7c126cf0d5992_w200.gif" alt="this slowpoke moves" width= "100px" height= "100px"/>`;
+                for (let i = 1; i <= 3; i++) {
+                  if (Graph[node[i]] == Graph[node[node[4]]]) {
+                    if (i == 1) {
+                      
+                      msg = `
+                      <div  class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Wowww Greaaaattttt Bonus</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+2]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: justify;font-size: 18px;">Choose the correct Connecting Sign for the Sign (below), </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else if (i == 2) {
+                      msg = `
+                      <div class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Wowww Greaaaattttt Bonus</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: justify;font-size: 18px;">Choose the correct Connecting Sign for the Sign (below), </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else {
+                      msg = `
+                      <div  class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Wowww Greaaaattttt Bonus</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-2]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: justify;font-size: 18px;">Choose the correct Connecting Sign for the Sign (below), </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    }
+                  }
+
+                  tempAlert(msg, msg2,   500);
+                  
+                }
+                  // `<img style="margin: auto; height:250px;width:250px;" src="https://i.gifer.com/origin/ce/cef2ce655eb9740cb8d7c126cf0d5992_w200.gif" alt="this slowpoke moves"  width="250" />` +
+                  // `<img style="margin: auto; height:250px;width:250px;" src="${Graph[node[1]]}"   width="250" />` +
+                  // `<img style="margin: auto; height:250px;width:250px;" src="${Graph[node[2]]}"   width="250" />` +
+                  // `<img style="margin: auto; height:250px;width:250px;" src="${Graph[node[3]]}"   width="250" />` +
+                  // `<p style="margin: 25px 10px 10px -85px";">You found the reward!</p>`;
+                  
+                // tempAlert(msg,  500);
+              } else {
+                //console.log("corr else check");
+                data.accuracy = 1;
+                correct += 1;
+                //console.log("correct");
+                //console.log("response: " + data.response);
+
+                function tempAlert(msg, duration) {
+                  var el = document.createElement("div");
+                  el.setAttribute(
+                    "style",
+                    "position: absolute;display: flex; justify-content: center;align-items: center; background-color:grey; color: #39FF14;font-size:40px"
+                  );
+                  el.innerHTML = msg;
+                  setTimeout(function () {
+                    el.parentNode.removeChild(el);
+                  }, duration);
+                  document.body.appendChild(el);
+                }
+
+                //var msg = "Incorrect, Correct Image was "  + "\n" + `<img src="${Graph[node[5]]}" style="position:absolute;bottom:-270%;left:110%;text-align: right;  border: 2px solid #D3D3D3; border-radius: 5px; border-color:red; height:200;width:200px">`;
+                var msg = "Correct";
+                for (let i = 1; i <= 3; i++) {
+                  if (Graph[node[i]] == Graph[node[node[4]]]) {
+                    if (i == 1) {
+                      msg = `
+                      <div  class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Correct Connection</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;vertical-align: bottom; border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i]]}" style="height:100px;width:100px; "></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+2]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: center;font-size: 18px;"> <b>Coin</b> </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else if (i == 2) {
+                      msg = `
+                      <div style=  class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Correct Connection</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: center;font-size: 18px;"> <b>Coin</b> </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else {
+                      msg = `
+                      <div class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Correct Connection</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i-2]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: center;font-size: 18px;"> <b>Coin</b> </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    }
+                  }
+
+                  // tempAlert(msg, 2000);
+                }
+
+                tempAlert(msg,   500);
+              }
+            } else {
+              if (node[5] == "rewarded") {
+                function tempAlert(msg,msg2, duration) {
+                  var el = document.createElement("A");
+        
+                  el.setAttribute(
+                    "style",
+                    "position:absolute;background-color:grey; color: red; font-size:40px"
+                  );
+                  var el2 = document.createElement("B");
+                  el2.setAttribute(
+                    "style",
+                    "position:absolute;bottom:85%;left:47%;background-color:grey; color: grey; width: 75px; height: 75px;font-size:40px"
+                  );
+                  el.innerHTML = msg;
+                  el2.innerHTML = msg2;
+                  setTimeout(function () {
+                    el.parentNode.removeChild(el);
+                    el2.parentNode.removeChild(el2);
+                  }, duration);
+
+      
+                  document.body.appendChild(el);
+                  document.body.appendChild(el2);
+                }
+
+                var msg;
+                var msg2 = `<img src="https://c.tenor.com/w43ByA1RgikAAAAC/milk-and-mocha-cry.gif" alt="this slowpoke moves" width= "100px" height= "100px"/>`;
+                for (let i = 1; i <= 3; i++) {
+                  if (Graph[node[i]] == Graph[node[node[4]]]) {
+                    if (i == 1) {
+                      msg = `
+                      <div  class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;text-align: Center;" id="p1">Ooops Missed</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+2]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: Center;font-size: 18px;">Oh You Missed </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else if (i == 2) {
+                      msg = `
+                      <div  class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Missed</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:red; text-align: center;font-size: 18px;">Wrong Connection </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else {
+                      msg = `
+                      <div class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Ooops Missed</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-2]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:grey; text-align: center;font-size: 18px;">Wrong </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px;border-color: #39FF14; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    }
+                  }
+
+                  // tempAlert(msg, 2500);
+                }
+                  // `<img style="margin: auto; height:250px;width:250px;" src="https://c.tenor.com/w43ByA1RgikAAAAC/milk-and-mocha-cry.gif" alt="this slowpoke moves"  width="250" />` +
+                  // `<p style="margin: 25px 10px 10px -90px";">You missed the reward!</p>`;
+
+                tempAlert(msg, msg2,  500);
+              } else {
+                data.accuracy = 0;
+                //console.log("incorrect");
+
+                function tempAlert(msg, duration) {
+                  var el = document.createElement("b");
+                  el.setAttribute(
+                    "style",
+                    "position: absolute;display: flex; justify-content: justify;align-items: center; background-color:grey; color: red;font-size:40px"
+                  );
+                  
+                  el.innerHTML = msg;
+                  setTimeout(function () {
+                    el.parentNode.removeChild(el);
+                  }, duration);
+                  document.body.appendChild(el);
+                }
+                //style="position:absolute;bottom:-270%;left:110%;text-align: right;  border: 2px solid #D3D3D3; border-radius: 5px; border-color:green; height:200;width:200px"
+                //var msg = "Correct Image was "  + "\n" + `<img src="${Graph[node[5]]}">` + `<img src="${Graph[node[data.response+1]]}"` + "incorrect";
+                //var msg = "Correct Image was "  + "\n" + `<img src="${Graph[node[5]]}">` + `<img src="${Graph[node[data.response+1]]}"` + "incorrect";
+                var msg;
+                for (let i = 1; i <= 3; i++) {
+                  if (Graph[node[i]] == Graph[node[node[4]]]) {
+                    if (i == 1) {
+                      msg = `
+                      <div class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Missed</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+2]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:red; text-align: center;font-size: 18px;">Wrong Connection </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else if (i == 2) {
+                      msg = `
+                      <div class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Missed</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: #39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i+1]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:red; text-align: center;font-size: 18px;">Wrong Connection </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    } else {
+                      msg =  `
+                      <div class="jspsych-content-wrapper">
+                        <div id="jspsych-content" class="jspsych-content">
+                          <div id="jspsych-html-button-response-stimulus">
+                            <p style="font-size:30px; font-family:fantasy;" id="p1">Missed</p>
+                            <div id="jspsych-html-button-response-btngroup">
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-0" data-choice="0"><button class="jspsych-btn"><img name="a" src="${Graph[node[i-2]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color: red;opacity:0.3;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-1" data-choice="1"><button class="jspsych-btn"><img name="b" src="${Graph[node[i-1]]}" style="height:100px;width:100px"></button></div>
+                              <div class="jspsych-html-button-response-button" style="border: 4px solid #D3D3D3;border-color:#39FF14;display: inline-block; margin:0px 8px" id="jspsych-html-button-response-button-2" data-choice="2"><button class="jspsych-btn"><img name="c" src="${Graph[node[i]]}" style="height:100px;width:100px"></button></div>
+                              </div>
+                              <p style="color:red; text-align: center;font-size: 18px;">Wrong Connection </p>
+                              <table style="margin: 0px auto;">
+                                <tbody>
+                                  <tr>
+                        
+                        <td> 
+                          <img src="${Graph[node[0]]}" style= "white-space: nowrap; border: 0.5px solid #D3D3D3; border-radius: 5px; height:140x;width:140px">
+                        </td>
+                                  </tr>
+                        </tbody>
+                        </table>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        
+                        </div>
+                      
+                      
+                      
+                      
+                      `;
+                    }
+                  }
+
+                  tempAlert(msg,   500);
+                }
+              }
+            }
+            var trial_json_result = {0:data};
+          serverComm.save_data(trial_json_result, "http://localhost/save_data_cont.php");
+          },
+        };
+        timeline.push(image_button_trial);
+      }
+      timeline.push(Break);
+    }
+    timeline.push(ending1);
+    timeline.push(ending2);
+    
+    calc = ((correct/170)*100);
+    
+    var ending3 = {
+      
+  //     type: "survey-html-form",
+  
+  // html: '<p style="font-size:30px; font-family:fantasy; " id="p1">Your correct percentage: <p style="font-size:50px; color:"white" font-family:fantasy; " id="calc">'+calc.toFixed(2)+'%</p></p>'
+
+  type: "survey-html-form",
+  preamble: function(data){
+   calc = ((correct/170)*100);
+    calc = calc.toFixed(2);
+    jsPsych.data.addProperties({corr_perc: calc+"%"});
+    console.log("calc: " + calc);
+   // data.corr_perc = calc;
+      return `<p style="font-size:30px; font-family:fantasy; " id="p1">Your correct percentage: <p style="font-size:50px; color:"white" font-family:fantasy; " id="calc">${calc}%</p></p>`
+     
+  },
+  html: ''
+};
+var final_trial = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `<p>You've finished the last task. Thanks for participating!</p>
+    <p><a href="https://app.prolific.co/submissions/complete?cc=XXXXXXX">Click here to return to Prolific and complete the study</a>.</p>`,
+  choices: "NO_KEYS"
+}
+timeline.push(ending3);
+timeline.push(final_trial);
+
+    jsPsych.init({
+      timeline: timeline,
+      default_iti: 500,
+
+      // on_data_update: function(data) {
+      //     var trial_json_result = {0:data};
+      //     serverComm.save_data(trial_json_result, "http://localhost/save_data_cont.php");
+      //   },
+
+      on_finish: function (data) {
+        console.log("on_finishdata: "+data);
+         
+        console.log("calc: "+calc);
+        //corr_perc: 0
+        
+        jsPsych.data
+          .get()
+          .localSave(
+            "csv",
+            "C:/Users/Omer/Documents/GitHub/graph_reward_diffusion/jspsych/mydata.csv"
+          );
+        var csv = jsPsych.data.get().csv();
+        var filename = "task.csv";
+        console.log("data.corr: "+jsPsych)
+        //jsPsych.data.corr_perc = calc;
+        //console.log("this is csv: " + csv);
+        jsPsych.data.displayData();
+
+        // var fs = require("fs");
+        //console.log("Going to write into existing file");
+        // Open a new file with name input.txt and write Simply Easy Learning! to it.
+        // fs.writeFile("input.txt", csv, function (err) {
+        //   if (err) {
+        //     return console.error(err);
+        //   }
+        //   console.log("Data written successfully!");
+        //   console.log("Let's read newly written data");
+        //   // Read the newly written file and print all of its content on the console
+        // });
+
+        // save_data_csv();
+        //saveData(jsPsych.data.get().csv());
+        // console.log("thi i data: "+jsPsych.data);
+        // serverComm.save_data(jsPsych.data.get().csv(), "http://localhost/save_data_cont.php");
+
+
+      },
+    });
+  </script>
+</html>
